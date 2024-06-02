@@ -71,36 +71,7 @@ function draw() {
 
   me.rotateDeg = rotationX;
 
-  for (let guest of guests) {
-    sumDeg += guest.rotateDeg;
-  }
-
-  if (radians(sumDeg) >= 0.5) {
-    shared.slime.setDirection('right', true);
-  } else if (radians(sumDeg) <= -0.5) {
-    shared.slime.setDirection('left', true);
-  } else {
-    shared.slime.setDirection('right', false);
-    shared.slime.setDirection('left', false);
-  }
-
-  text('left is ' + shared.slime.directions.left + ', right is ' + shared.slime.directions.right,width/2,height/2);
-
-  if (keyIsPressed) {
-    if (key === 'w') {
-      shared.slime.setDirection('up', true);
-    } 
-    if (key === 's') {
-      shared.slime.setDirection('down', true);
-    }
-  } else {
-    shared.slime.setDirection('up', false);
-    shared.slime.setDirection('down', false); 
-  }
-
   shared.slime.move(gameMap.obstacles);
-
-  sumDeg = 0;
 
   if (frameCount % 5 == 0) {
     currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
@@ -140,35 +111,35 @@ function keyPressed() {
     }
   }
 
-  // switch (keyCode) {
-  //   case 87:
-  //     shared.slime.setDirection('up', true);
-  //     break;
-  //   case 83:
-  //     shared.slime.setDirection('down', true);
-  //     break;
-    // case 65:
-    //   shared.slime.setDirection('left', true);
-    //   break;
-    // case 68:
-    //   shared.slime.setDirection('right', true);
-    //   break;
-  // }
+  switch (keyCode) {
+    case 87:
+      shared.slime.setDirection('up', true);
+      break;
+    case 83:
+      shared.slime.setDirection('down', true);
+      break;
+    case 65:
+      shared.slime.setDirection('left', true);
+      break;
+    case 68:
+      shared.slime.setDirection('right', true);
+      break;
+  }
 }
 
-// function keyReleased() {
-//   switch (keyCode) {
-//     case 87:
-//       shared.slime.setDirection('up', false);
-//       break;
-//     case 83:
-//       shared.slime.setDirection('down', false);
-//       break;
-    // case 65:
-    //   shared.slime.setDirection('left', false);
-    //   break;
-    // case 68:
-    //   shared.slime.setDirection('right', false);
-    //   break;
-//   }
-// }
+function keyReleased() {
+  switch (keyCode) {
+    case 87:
+      shared.slime.setDirection('up', false);
+      break;
+    case 83:
+      shared.slime.setDirection('down', false);
+      break;
+    case 65:
+      shared.slime.setDirection('left', false);
+      break;
+    case 68:
+      shared.slime.setDirection('right', false);
+      break;
+  }
+}
