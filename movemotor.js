@@ -181,7 +181,7 @@ function draw() {
   //배터리 애니메이션
   motorBatteryImgNow = int(1 + 7 * (game2.energy / 10000)) //점수 0~1000 값을 1~8로 나오도록
   motorBatteryImg = motorBatteryImgs[motorBatteryImgNow++]
-  image(motorBatteryImg, width / 2, height / 2, 400, 320)
+  image(motorBatteryImg, 0, height / 2, 400, 320)
 }
 
 // 모터 돌리기 게임 class
