@@ -16,7 +16,7 @@ let boostImgs = [];
 let boostButtonImgs = [];
 let successBg, gameoverBg;
 
-let saveDegX = 1;
+let saveDegX = 0;
 let saveDegY = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -128,21 +128,21 @@ function draw() {
   game.update();
   game.draw(totalDegX, totalDegY);
 
-if (keyIsPressed && keyCode === ENTER){
-  saveDegX = totalDegX
-  saveDegY = totalDegY
-  game.degmatch(saveDegX, saveDegY);
-  saveDegX = 0
-  saveDegY = 0
-}
-console.log(saveDegX);
+
+
+console.log(saveDegX)
 }
 
-// function keyPressed(){
-//     if (key === ENTER) {
-//       value = 255;
-// }
-// }
+function keyPressed(){
+  if (keyCode === ENTER){
+
+    saveDegX = totalDegX
+    saveDegY = totalDegY
+    game.degmatch(saveDegX, saveDegY);
+    saveDegX = 0
+    saveDegY = 0
+  }
+}
 /* 각도 디버깅용 텍스트
 textAlign(CENTER, CENTER); // 텍스트 정렬 설정
 textSize(32);
@@ -167,7 +167,7 @@ class MovingGame {
     this.currentDirections = [];
     this.round = 1;
     this.maxRounds = 4;
-    this.baseTimeLimit = 5000; // 기본 30초
+    this.baseTimeLimit = 30000; // 기본 30초
     this.startTime = 0;
     this.gameOver = false;
     this.gameStarted = false;
