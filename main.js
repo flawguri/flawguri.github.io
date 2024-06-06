@@ -16,6 +16,9 @@ let boostImgs = [];
 let boostButtonImgs = [];
 let successBg, gameoverBg;
 
+let saveDegX = 1;
+let saveDegY = 0;
+
 document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
   if (activateButton) {
@@ -124,8 +127,22 @@ function draw() {
   console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
   game.update();
   game.draw(totalDegX, totalDegY);
-  game.degmatch(totalDegX, totalDegY);
+
+if (keyIsPressed && keyCode === ENTER){
+  saveDegX = totalDegX
+  saveDegY = totalDegY
+  game.degmatch(saveDegX, saveDegY);
+  saveDegX = 0
+  saveDegY = 0
 }
+console.log(saveDegX);
+}
+
+// function keyPressed(){
+//     if (key === ENTER) {
+//       value = 255;
+// }
+// }
 /* 각도 디버깅용 텍스트
 textAlign(CENTER, CENTER); // 텍스트 정렬 설정
 textSize(32);
@@ -136,13 +153,13 @@ textSize(24);
 text(lastDirectionText, width / 2, height / 2 + 50);
 */
 
-// 엔터키 이벤트 핸들러
-function handleKeyDown(event) {
-  if (event.key === 'Enter') {
-    console.log("Enter key pressed");
-    game.degmatch(totalDegX, totalDegY);
-  }
-}
+// // 엔터키 이벤트 핸들러
+// function handleKeyDown(event) {
+//   if (event.key === 'Enter') {
+//     console.log("Enter key pressed");
+//     game.degmatch(totalDegX, totalDegY);
+//   }
+// }
 
 class MovingGame {
   constructor() {
@@ -223,9 +240,10 @@ class MovingGame {
 
     //배경화면 이미지
     image(boostImgBg, 0, 0, 800, 600);
+
     //엔터누를때 버튼 누르는 이미지
     let boostButtonPressed = 0
-    if (keyIsPressed === true && keyCode === ENTER) boostButtonPressed = 1;
+    if (keyIsPressed && keyCode === ENTER) boostButtonPressed = 1;
     else boostButtonPressed = 0;
     image(boostButtonImgs[boostButtonPressed], 0, 0, 800, 600);
 
