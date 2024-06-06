@@ -275,8 +275,6 @@ class MovingGame {
     strokeWeight(5);
     rect(50, height - 100, width - 100, 40);
     noStroke();
-    fill(0, 200, 0);
-    rect(50, height - 100, timerWidth - 100, 40); // 레트로 스타일 타이머 막대
   }
 
   handleKeyPressed() {
