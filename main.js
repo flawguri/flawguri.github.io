@@ -11,7 +11,11 @@ let buttonStart, buttonStartOver, buttonStartPressed;
 let buttonAgain, buttonAgainOver, buttonAgainPressed;
 let buttonClose, buttonCloseOver, buttonClosePressed;
 
-document.addEventListener("DOMContentLoaded", function() {
+let boostImgBg;
+let boostImgs = [];
+let boostButtonImgs = [];
+
+document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
   if (activateButton) {
     activateButton.addEventListener('click', onClick);
@@ -67,7 +71,7 @@ function preload() {
   me = partyLoadMyShared({ degX: 0, degY: 0 }); // degX, degY 추가
   console.log("me initialized:", me);
   dungGeunMoFont = loadFont('fonts/DungGeunMo.otf');
-  boostIntroBg = loadImage('assets/boostIntroBg.png'); // 시작화면 배경 이미지 추가
+
   buttonStart = loadImage('buttons/buttonStart.png');
   buttonStartOver = loadImage('buttons/buttonStartOver.png');
   buttonStartPressed = loadImage('buttons/buttonStartPressed.png');
@@ -77,6 +81,15 @@ function preload() {
   buttonClose = loadImage('buttons/buttonClose.png');
   buttonCloseOver = loadImage('buttons/buttonCloseOver.png');
   buttonClosePressed = loadImage('buttons/buttonClosePressed.png');
+
+  boostIntroBg = loadImage('assets/boost/boostIntroBg.png'); // 시작화면 배경 이미지 추가
+  boostImgBg = loadImage('assets/boost/boostBg.png');
+  for (i = 0; i < 5; i++) {
+    boostImgs[i] = loadImage('assets/boost/boost' + i + '.png');
+  }
+  boostButtonImgs[0] = loadImage('assets/boost/boostButton0.png');
+  boostButtonImgs[1] = loadImage('assets/boost/boostButton1.png');
+
 }
 
 function setup() {
@@ -107,13 +120,13 @@ function draw() {
   }
   console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
   game.update();
-  game.draw();
+  game.draw(totalDegX, totalDegY);
   game.degmatch(totalDegX, totalDegY);
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   textSize(32);
   fill("#000066"); // 텍스트 색상 설정
-  text(totalDegX.toFixed(2) + " DegX", width / 2, height/2 - 30); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
-  text(totalDegY.toFixed(2) + " DegY", width / 2, height/2);
+  text(totalDegX.toFixed(2) + " DegX", width / 2, height / 2 - 30); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
+  text(totalDegY.toFixed(2) + " DegY", width / 2, height / 2);
   textSize(24);
   text(lastDirectionText, width / 2, height / 2 + 50);
 }
@@ -178,7 +191,7 @@ class MovingGame {
     }
   }
 
-  draw() {
+  draw(storedDegX,storedDegY) {
     background(220);
 
     if (!this.gameStarted) {
@@ -194,6 +207,31 @@ class MovingGame {
       }
       return;
     }
+    //배경화면 이미지
+    image(boostImgBg, 0, 0, 800, 600);
+    //엔터누를때 버튼 누르는 이미지
+    let boostButtonPressed = 0
+    if (keyIsPressed === true && keyCode === ENTER) boostButtonPressed = 1;
+    else boostButtonPressed = 0;
+    image(boostButtonImgs[boostButtonPressed], 0, 0, 800, 600);
+
+    //부스터 방향 이미지
+    let boostDirection = 0;
+    if (storedDegY > 0.5) {
+      boostDirection = 4 //'RIGHT';
+    } else if (storedDegY < -0.5) {
+      boostDirection = 3 //'LEFT';
+    } else if (storedDegX > 0.5) {
+      boostDirection = 2 //'DOWN';
+    } else if (storedDegX < -0.5) {
+      boostDirection = 1 //'UP';
+    }
+  
+
+    image(boostImgs[boostDirection], 0, 0, 800, 600);
+
+
+
     //방향키 화면에 띄우기
     this.drawDirections();
     //타이머 화면에 띄우기
@@ -202,7 +240,7 @@ class MovingGame {
 
   //게임시작시 화면
   drawStartScreen() {
-    image(boostIntroBg, 0, 0, width, height); // 시작화면 배경 이미지 그리기
+    image(boostIntroBg, 0, 0, 800, 600); // 시작화면 배경 이미지 그리기
     // textSize(32);
     // textAlign(CENTER, CENTER);
     // text('Press any key to start', width / 2, height / 2 - 100);
@@ -216,16 +254,16 @@ class MovingGame {
     }
     noSmooth();
     imageMode(CENTER)
-    image(img, width / 2, height * 5/6, 200, 87.5); 
+    image(img, width / 2, height * 5 / 6, 200, 87.5);
     imageMode(CORNER)
   }
-  
- drawGameOverScreen() {
+
+  drawGameOverScreen() {
     textSize(32);
     textAlign(CENTER, CENTER);
     text('Times Up! You Lost!', width / 2, height / 2 - 40);
     this.restartButton.show();
-  
+
     let img;
     if (this.isButtonPressedAgain) {
       img = buttonAgainPressed;
@@ -234,16 +272,16 @@ class MovingGame {
     } else {
       img = buttonAgain;
     }
-  
-    image(img, width / 2, height * 5/6, 200, 87.5);
+
+    image(img, width / 2, height * 5 / 6, 200, 87.5);
   }
-  
+
   drawSuccessScreen() {
     textSize(32);
     textAlign(CENTER, CENTER);
     text('Congratulations! You Won!', width / 2, height / 2 - 40);
     this.restartButton.show();
-  
+
     let img;
     if (this.isButtonPressedClose) {
       img = buttonClosePressed;
@@ -253,7 +291,7 @@ class MovingGame {
       img = buttonClose;
     }
     noSmooth();
-    image(img, width / 2, height * 5/6, 200, 87.5);
+    image(img, width / 2, height * 5 / 6, 200, 87.5);
   }
 
   //화면에 방향키 띄우기
@@ -261,7 +299,7 @@ class MovingGame {
     textSize(100);
     textAlign(CENTER, CENTER);
     for (let i = 0; i < this.currentDirections.length; i++) {
-      text(this.getArrowSymbol(this.currentDirections[i]), width / 2 + (i - this.currentDirections.length / 2) * 100, height / 2 - 400);
+      text(this.getArrowSymbol(this.currentDirections[i]), width / 2 + (i - this.currentDirections.length / 2) * 100, height * 1 / 5);
     }
     textSize(32);
   }
@@ -270,6 +308,10 @@ class MovingGame {
     let elapsedTime = millis() - this.startTime;
     let timerWidth = map(elapsedTime, 150, this.getTimeLimit(), width, 0);
 
+
+    noStroke();
+    fill(0, 200, 0);
+    rect(50, height - 100, timerWidth - 100, 40); // 레트로 스타일 타이머 막대
     noFill();
     stroke(0);
     strokeWeight(5);
@@ -302,18 +344,18 @@ class MovingGame {
       inputDirection = 'UP';
     }*/
 
-degmatch(storedDegX, storedDegY) {
-  let inputDirection = null;
-  fill(0);
-  if (storedDegY > 0.5) {
-    inputDirection = 'RIGHT';
+  degmatch(storedDegX, storedDegY) {
+    let inputDirection = null;
+    fill(0);
+    if (storedDegY > 0.5) {
+      inputDirection = 'RIGHT';
     } else if (storedDegY < -0.5) {
-    inputDirection = 'LEFT';
+      inputDirection = 'LEFT';
     } else if (storedDegX > 0.5) {
-    inputDirection = 'DOWN';
+      inputDirection = 'DOWN';
     } else if (storedDegX < -0.5) {
-    inputDirection = 'UP';
-    }    
+      inputDirection = 'UP';
+    }
 
     // 첫 번째 방향과 현재 방향을 비교하여 일치하면 첫 번째 방향만 제거
     if (inputDirection && this.currentDirections.length > 0 && inputDirection === this.currentDirections[0]) {
@@ -351,7 +393,7 @@ degmatch(storedDegX, storedDegY) {
         return '→';
     }
   }
-} 
+}
 
 
 function mousePressed() {
@@ -361,17 +403,17 @@ function mousePressed() {
     console.error("game.handleKeyPressed is not a function or game is not defined");
   }
 
-  if (!game.gameStarted && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height *5/6 - 43.75 && mouseY < height * 5/6 + 43.75) {
+  if (!game.gameStarted && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
     game.isButtonPressed = true;
     game.startGame();
   }
 
-  if (game.gameOver && !game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height *5/6 - 43.75 && mouseY < height * 5/6 + 43.75) {
+  if (game.gameOver && !game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
     game.isButtonPressedAgain = true;
     game.resetGame();
   }
 
-  if (game.gameOver && game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height *5/6 - 43.75 && mouseY < height * 5/6 + 43.75) {
+  if (game.gameOver && game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
     game.isButtonPressedClose = true;
     game.closeGame();
   }
@@ -384,21 +426,22 @@ function mouseReleased() {
 }
 
 function mouseMoved() {
-  if (!game.gameStarted && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height *5/6 - 43.75 && mouseY < height * 5/6 + 43.75) {
+  if (!game.gameStarted && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
     game.isButtonOver = true;
   } else {
     game.isButtonOver = false;
   }
 
-  if (game.gameOver && !game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height *5/6 - 43.75 && mouseY < height * 5/6 + 43.75) {
+  if (game.gameOver && !game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
     game.isButtonOverAgain = true;
   } else {
     game.isButtonOverAgain = false;
   }
 
-  if (game.gameOver && game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height *5/6 - 43.75 && mouseY < height * 5/6 + 43.75) {
+  if (game.gameOver && game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
     game.isButtonOverClose = true;
   } else {
     game.isButtonOverClose = false;
   }
 }
+
