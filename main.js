@@ -125,7 +125,7 @@ function draw() {
   game.update();
   game.draw(totalDegX, totalDegY);
   game.degmatch(totalDegX, totalDegY);
-
+}
   /* 각도 디버깅용 텍스트
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   textSize(32);
@@ -135,6 +135,13 @@ function draw() {
   textSize(24);
   text(lastDirectionText, width / 2, height / 2 + 50);
   */
+
+  // 엔터키 이벤트 핸들러
+function handleKeyDown(event) {
+  if (event.key === 'Enter') {
+    console.log("Enter key pressed");
+    game.degmatch(totalDegX, totalDegY);
+  }
 }
 
 class MovingGame {
